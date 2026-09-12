@@ -2113,7 +2113,10 @@ o.x+"px";
   if(o.coin && !o.collected){
     o.coin.style.left = (o.x + 18) + "px";
 
-    if(collision(o.coin)){
+    if(bird.getBoundingClientRect().right > o.coin.getBoundingClientRect().left &&
+   bird.getBoundingClientRect().left < o.coin.getBoundingClientRect().right &&
+   bird.getBoundingClientRect().bottom > o.coin.getBoundingClientRect().top &&
+   bird.getBoundingClientRect().top < o.coin.getBoundingClientRect().bottom){
         o.collected = true;
         o.coin.remove();
         o.coin = null;
