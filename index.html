@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>KOKI Fly</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#101923;touch-action:none}
+#game{position:relative;width:100%;height:100%;overflow:hidden;background:
+radial-gradient(circle at 78% 17%,#ffe16b 0 5%,transparent 6%),
+linear-gradient(#4cc9ff 0 62%,#86d96c 62% 100%)}
+#hud{position:absolute;z-index:20;top:18px;left:14px;right:14px;display:flex;justify-content:space-between}
+.hudbox{background:#07372edc;border:2px solid #ffd52d;color:white;border-radius:16px;padding:8px 14px;font-weight:800;box-shadow:0 5px 12px #0004}
+#score,#best{color:#ffd52d;font-size:24px}
+#bird{position:absolute;left:20%;top:43%;width:105px;height:78px;z-index:10;transform:translate(-50%,-50%);filter:drop-shadow(0 6px 8px #0005)}
+#bird img{width:100%;height:100%;object-fit:contain;display:block;transform-origin:center;animation:wingBob .18s ease-in-out infinite alternate}
+@keyframes wingBob{from{transform:scaleY(.96) rotate(-2deg)}to{transform:scaleY(1.04) rotate(2deg)}}
+
+.pipe{position:absolute;width:78px;background:linear-gradient(90deg,#0d7b32,#45d75a 45%,#84f36a 62%,#15833a);
+border:4px solid #124c26;z-index:7;box-shadow:inset 8px 0 0 #ffffff18,inset -7px 0 0 #0002}
+.pipe.top{top:0}.pipe.bottom{bottom:0}
+.pipe:after{content:"";position:absolute;left:-10px;width:90px;height:26px;background:linear-gradient(90deg,#0c7131,#58df64,#1a8a3b);
+border:4px solid #124c26;border-radius:6px}
+.pipe.top:after{bottom:-4px}.pipe.bottom:after{top:-4px}
+
+.bricks{position:absolute;width:136px;background:
+linear-gradient(#0000 0 0),
+repeating-linear-gradient(0deg,#a84623 0 28px,#7f2f18 28px 32px);
+border:4px solid #6f2b18;z-index:7;box-shadow:inset 0 0 0 2px #d86c40}
+.bricks:before{content:"";position:absolute;inset:0;background:
+repeating-linear-gradient(90deg,transparent 0 64px,#6f2b18 64px 68px);
+opacity:.95}
+.bricks.top{top:0}.bricks.bottom{bottom:0}
+
+.cloud{position:absolute;font-size:50px;opacity:.72;animation:cloud 16s linear infinite}.c1{top:12%;left:110%}.c2{top:32%;left:150%;animation-delay:-7s}
+@keyframes cloud{to{transform:translateX(-175vw)}}
+
+#ground{position:absolute;bottom:0;width:100%;height:32px;background:
+repeating-linear-gradient(45deg,#7c4a20 0 16px,#b96e2c 16px 32px);border-top:5px solid #5dac43;z-index:12}
+
+.panel{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:#082026b5;backdrop-filter:blur(3px)}
+.card{width:86%;max-width:360px;background:#07372ef3;border:3px solid #ffd52d;border-radius:26px;padding:26px 22px;text-align:center;color:white;box-shadow:0 15px 35px #0006}
+.logo{font-size:45px;font-weight:900;color:#ffd52d;text-shadow:0 4px 0 #8a6200}
+.card p{margin:14px 0 20px;line-height:1.45;color:#d8fff2}
+button{width:100%;border:0;border-radius:16px;padding:15px;background:#ffd52d;color:#173020;font-weight:900;font-size:20px}
+#over{display:none}
+#tip{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);z-index:16;background:#0005;color:#fff;padding:8px 14px;border-radius:18px;font-weight:700;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="game">
+  <div class="cloud c1">☁️</div>
+  <div class="cloud c2">☁️</div>
+
+  <div id="hud">
+    <div class="hudbox">SCORE <span id="score">0</span></div>
+    <div class="hudbox">BEST <span id="best">0</span></div>
+  </div>
+
+  <div id="bird"><img src="koki.png" alt="KOKI"></div>
+  <div id="tip">👆 Tap to fly</div>
+  <div id="ground"></div>
+
+  <div id="start" class="panel">
+    <div class="card">
+      <div class="logo">KOKI FLY</div>
+      <p>Fly through green pipes and brick walls. Tap anywhere to flap!</p>
+      <button id="startBtn">▶ START GAME</button>
+    </div>
+  </div>
+
+  <div id="over" class="panel">
+    <div class="card">
+      <div class="logo">GAME OVER</div>
+      <p>Score: <b id="finalScore">0</b><br>Best: <b id="finalBest">0</b></p>
+      <button id="restartBtn">🔄 PLAY AGAIN</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const game=document.getElementById("game");
+const bird=document.getElementById("bird");
+const scoreEl=document.getElementById("score");
+const bestEl=document.getElementById("best");
+const start=document.getElementById("start");
+const over=document.getElementById("over");
+const finalScore=document.getElementById("finalScore");
+const finalBest=document.getElementById("finalBest");
+
+let running=false,score=0,y=0,velocity=0,last=0,lastObs=0,raf;
+let obstacles=[];
+let best=Number(localStorage.getItem("kokiFlyBest")||0);
+bestEl.textContent=best;
+
+function startGame(){
+  obstacles.forEach(o=>{o.a.remove();o.b.remove()});
+  obstacles=[];
+  score=0; scoreEl.textContent=0;
+  y=innerHeight*.43; velocity=0;
+  bird.style.top=y+"px";
+  start.style.display="none";
+  over.style.display="none";
+  running=true;
+  last=performance.now();
+  lastObs=last;
+  cancelAnimationFrame(raf);
+  raf=requestAnimationFrame(loop);
+}
+
+function flap(){
+  if(!running)return;
+  velocity=-7.3;
+}
+
+function makeObstacle(){
+  const gap=Math.max(150,190-score*1.2);
+  const topH=85+Math.random()*Math.max(80,innerHeight-gap-240);
+  const bottomH=innerHeight-topH-gap;
+  const brickMode=Math.random()<0.38;
+
+  const a=document.createElement("div");
+  const b=document.createElement("div");
+  a.className=(brickMode?"bricks":"pipe")+" top";
+  b.className=(brickMode?"bricks":"pipe")+" bottom";
+  a.style.height=topH+"px";
+  b.style.height=bottomH+"px";
+  a.style.left=(innerWidth+30)+"px";
+  b.style.left=(innerWidth+30)+"px";
+  game.append(a,b);
+
+  obstacles.push({
+    a,b,x:innerWidth+30,
+    width:brickMode?136:78,
+    scored:false
+  });
+}
+
+function collision(el){
+  const A=bird.getBoundingClientRect();
+  const B=el.getBoundingClientRect();
+  const p=14;
+  return !(A.right-p<B.left || A.left+p>B.right || A.bottom-p<B.top || A.top+p>B.bottom);
+}
+
+function endGame(){
+  if(!running)return;
+  running=false;
+  best=Math.max(best,score);
+  localStorage.setItem("kokiFlyBest",best);
+  bestEl.textContent=best;
+  finalScore.textContent=score;
+  finalBest.textContent=best;
+  over.style.display="flex";
+}
+
+function loop(now){
+  if(!running)return;
+  const d=Math.min(2,(now-last)/16.67);
+  last=now;
+
+  velocity+=0.38*d;
+  y+=velocity*d;
+  bird.style.top=y+"px";
+  bird.style.transform=`translate(-50%,-50%) rotate(${Math.max(-18,Math.min(55,velocity*4))}deg)`;
+
+  if(y<0 || y>innerHeight-70){ endGame(); return; }
+
+  if(now-lastObs>1450){
+    makeObstacle();
+    lastObs=now;
+  }
+
+  const speed=3.1+Math.min(2.2,score*.08);
+
+  for(let i=obstacles.length-1;i>=0;i--){
+    const o=obstacles[i];
+    o.x-=speed*d;
+    o.a.style.left=o.x+"px";
+    o.b.style.left=o.x+"px";
+
+    if(collision(o.a)||collision(o.b)){ endGame(); return; }
+
+    if(!o.scored && o.x+o.width<innerWidth*.20){
+      o.scored=true;
+      score++;
+      scoreEl.textContent=score;
+    }
+
+    if(o.x<-160){
+      o.a.remove();o.b.remove();obstacles.splice(i,1);
+    }
+  }
+
+  raf=requestAnimationFrame(loop);
+}
+
+document.addEventListener("pointerdown",e=>{
+  if(e.target.tagName==="BUTTON")return;
+  flap();
+});
+
+document.getElementById("startBtn").onclick=startGame;
+document.getElementById("restartBtn").onclick=startGame;
+</script>
+</body>
+</html>
