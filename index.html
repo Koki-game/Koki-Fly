@@ -2174,10 +2174,7 @@ if(o.x<-160){
 o.a.remove();
 
 o.b.remove();
-if(o.coin){
-  o.coin.remove();
-  o.coin=null;
-}
+  if(o.coin && !o.collected) o.coin.remove();
 obstacles.splice(
 i,
 1
