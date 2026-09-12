@@ -2111,35 +2111,43 @@ o.x+"px";
 o.b.style.left=
 o.x+"px";
 if(o.coin && !o.collected){
-  o.coin.style.left=(o.x+18)+"px";
 
-  if(collision(o.coin)){
-    o.collected=true;
-    o.coin.remove();
+    o.coin.style.left = (o.x + 18) + "px";
 
-    state.points+=10;
-    saveLocal();
-    draw();
+    if(collision(o.coin)){
+        o.collected = true;
 
-    try{
-      const ctx=new (window.AudioContext||window.webkitAudioContext)();
-      const osc=ctx.createOscillator();
-      const gain=ctx.createGain();
+        // ჯერ ეკრანიდან მაშინვე გაქრეს
+        o.coin.style.display = "none";
+        o.coin.remove();
+        o.coin = null;
 
-      osc.type="sine";
-      osc.frequency.setValueAtTime(880,ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(1320,ctx.currentTime+0.08);
+        // +10 Points
+        state.points += 10;
+        saveLocal();
+        draw();
 
-      gain.gain.setValueAtTime(0.18,ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.12);
+        // coin sound
+        try{
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(900, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1500, ctx.currentTime + 0.12);
 
-      osc.start();
-      osc.stop(ctx.currentTime+0.12);
-    }catch(e){}
-  }
+            gain.gain.setValueAtTime(0.25, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.15);
+        }catch(e){}
+    }
+}
 }
 if(
 collision(o.a)||
