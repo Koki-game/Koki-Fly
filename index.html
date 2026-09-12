@@ -1809,7 +1809,7 @@ obstacles.forEach(o=>{
 
 o.a.remove();
 o.b.remove();
-
+if(o.coin) o.coin.remove();
 });
 
 obstacles=[];
