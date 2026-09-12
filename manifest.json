@@ -1,1 +1,19 @@
 
+{
+  "name": "KOKI Fly",
+  "short_name": "KOKI Fly",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b6b3a",
+  "theme_color": "#0b6b3a",
+  "description": "KOKI Fly Game",
+  "icons": [
+    {
+      "src": "koki.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
