@@ -1982,7 +1982,12 @@ if(!running)
 return;
 
 running=false;
-
+obstacles.forEach(o=>{
+  if(o.coin){
+    o.coin.remove();
+    o.coin=null;
+  }
+});
 best=
 Math.max(
 best,
