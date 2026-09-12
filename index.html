@@ -1901,21 +1901,25 @@ b.style.left=
 
 game.append(a,b);
 
+
+// KOKI coin
+const coin = document.createElement("div");
+coin.className = "coin";
+
+const coinY = topH + 40 + Math.random() * Math.max(20, gap - 120);
+
+coin.style.left = (game.clientWidth + 65) + "px";
+coin.style.top = coinY + "px";
+game.appendChild(coin);
+
 obstacles.push({
-
-a:a,
-b:b,
-
-x:
-game.clientWidth+30,
-
-width:
-brickMode
-?136
-:78,
-
-scored:false
-
+  a:a,
+  b:b,
+  coin:coin,
+  x:game.clientWidth+30,
+  width:brickMode ? 136 : 78,
+  scored:false,
+  collected:false
 });
 
 }
@@ -2075,7 +2079,37 @@ o.x+"px";
 
 o.b.style.left=
 o.x+"px";
+if(o.coin && !o.collected){
+  o.coin.style.left=(o.x+35)+"px";
 
+  if(collision(o.coin)){
+    o.collected=true;
+    o.coin.remove();
+
+    state.points+=10;
+    saveLocal();
+    draw();
+
+    try{
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+
+      osc.type="sine";
+      osc.frequency.setValueAtTime(880,ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1320,ctx.currentTime+0.08);
+
+      gain.gain.setValueAtTime(0.18,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.12);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime+0.12);
+    }catch(e){}
+  }
+}
 if(
 collision(o.a)||
 collision(o.b)
@@ -2107,7 +2141,7 @@ if(o.x<-160){
 o.a.remove();
 
 o.b.remove();
-
+if(o.coin && !o.collected) o.coin.remove();
 obstacles.splice(
 i,
 1
