@@ -3,25 +3,200 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#07372e">
 <title>KOKI Fly</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#101923;touch-action:none}
-#game{position:relative;width:100%;height:100%;overflow:hidden;background:
-radial-gradient(circle at 78% 17%,#ffe16b 0 5%,transparent 6%),
-linear-gradient(#4cc9ff 0 62%,#86d96c 62% 100%)}
-#hud{position:absolute;z-index:20;top:18px;left:14px;right:14px;display:flex;justify-content:space-between}
-.hudbox{background:#07372edc;border:2px solid #ffd52d;color:white;border-radius:16px;padding:8px 14px;font-weight:800;box-shadow:0 5px 12px #0004}
-#score,#best{color:#ffd52d;font-size:24px}
-#bird{position:absolute;left:20%;top:43%;width:65px;height:48px;z-index:10;transform:translate(-50%,-50%);filter:drop-shadow(0 6px 8px #0005)}
-#bird img{width:100%;height:100%;object-fit:contain;display:block;transform-origin:center;animation:wingBob .18s ease-in-out infinite alternate}
-@keyframes wingBob{from{transform:scaleY(.96) rotate(-2deg)}to{transform:scaleY(1.04) rotate(2deg)}}
 
-.pipe{position:absolute;width:78px;background:linear-gradient(90deg,#0d7b32,#45d75a 45%,#84f36a 62%,#15833a);
-border:4px solid #124c26;z-index:7;box-shadow:inset 8px 0 0 #ffffff18,inset -7px 0 0 #0002}
-.pipe.top{top:0}.pipe.bottom{bottom:0}
-.pipe:after{content:"";position:absolute;left:-10px;width:90px;height:26px;background:linear-gradient(90deg,#0c7131,#58df64,#1a8a3b);
-border:4px solid #124c26;border-radius:6px}
+<style>
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+-webkit-tap-highlight-color:transparent
+}
+
+html,body{
+width:100%;
+height:100%;
+font-family:Arial,sans-serif;
+background:#071a16;
+color:white;
+}
+
+body{
+overflow:hidden;
+}
+
+button{
+cursor:pointer;
+}
+
+#app{
+width:100%;
+height:100%;
+position:relative;
+overflow:hidden;
+}
+
+/* TOP BAR */
+
+#topBar{
+position:absolute;
+top:0;
+left:0;
+right:0;
+height:62px;
+z-index:100;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:8px 10px;
+background:#06271fcc;
+backdrop-filter:blur(8px);
+border-bottom:1px solid #ffffff20;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:7px;
+font-size:22px;
+font-weight:900;
+color:#ffd52d;
+}
+
+.brand img{
+width:40px;
+height:40px;
+object-fit:contain;
+}
+
+.topBtns{
+display:flex;
+gap:6px;
+}
+
+.smallBtn{
+border:1px solid #d9b12a;
+background:#14251c;
+color:#ffd83d;
+padding:8px 9px;
+border-radius:11px;
+font-size:11px;
+font-weight:800;
+max-width:135px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+/* PAGES */
+
+.page{
+display:none;
+position:absolute;
+top:62px;
+left:0;
+right:0;
+bottom:68px;
+overflow-y:auto;
+overflow-x:hidden;
+}
+
+.page.active{
+display:block;
+}
+
+#flyPage{
+overflow:hidden;
+}
+
+/* GAME */
+
+#game{
+position:relative;
+width:100%;
+height:100%;
+overflow:hidden;
+touch-action:none;
+background:
+radial-gradient(circle at 78% 17%,#ffe16b 0 5%,transparent 6%),
+linear-gradient(#4cc9ff 0 62%,#86d96c 62% 100%);
+}
+
+#hud{
+position:absolute;
+z-index:20;
+top:12px;
+left:10px;
+right:10px;
+display:flex;
+justify-content:space-between;
+gap:5px;
+}
+
+.hudbox{
+background:#07372edc;
+border:2px solid #ffd52d;
+color:white;
+border-radius:14px;
+padding:7px 10px;
+font-size:12px;
+font-weight:800;
+box-shadow:0 5px 12px #0004;
+}
+
+#score,#best,#gamePoints{
+color:#ffd52d;
+font-size:19px;
+}
+
+#bird{
+position:absolute;
+left:20%;
+top:43%;
+width:65px;
+height:48px;
+z-index:10;
+transform:translate(-50%,-50%);
+filter:drop-shadow(0 6px 8px #0005);
+}
+
+#bird img{
+width:100%;
+height:100%;
+object-fit:contain;
+display:block;
+transform-origin:center;
+animation:wingBob .18s ease-in-out infinite alternate;
+}
+
+@keyframes wingBob{
+from{transform:scaleY(.96) rotate(-2deg)}
+to{transform:scaleY(1.04) rotate(2deg)}
+}
+
+.pipe{
+position:absolute;
+width:78px;
+background:linear-gradient(90deg,#0d7b32,#45d75a 45%,#84f36a 62%,#15833a);
+border:4px solid #124c26;
+z-index:7;
+box-shadow:inset 8px 0 0 #ffffff18,inset -7px 0 0 #0002;
+}
+
+.pipe.top{top:0}
+.pipe.bottom{bottom:0}
+
+.pipe:after{
+content:"";
+position:absolute;
+left:-10px;
+width:90px;
+height:26px;
+background:linear-gradient(90deg,#0c7131,#58df64,#1a8a3b);
+border:4px solid #124c26;
+border-radius:6px;
+}
 
 .bricks{
 position:absolute;
@@ -35,178 +210,1958 @@ border:4px solid #6f2b18;
 box-shadow:inset 0 0 10px #7a301f;
 z-index:7;
 }
+
 .bricks.top{top:0}
 .bricks.bottom{bottom:0}
-.cloud{position:absolute;font-size:50px;opacity:.72;animation:cloud 16s linear infinite}.c1{top:12%;left:110%}.c2{top:32%;left:150%;animation-delay:-7s}
-@keyframes cloud{to{transform:translateX(-175vw)}}
 
-#ground{position:absolute;bottom:0;width:100%;height:32px;background:
-repeating-linear-gradient(45deg,#7c4a20 0 16px,#b96e2c 16px 32px);border-top:5px solid #5dac43;z-index:12}
+.cloud{
+position:absolute;
+font-size:50px;
+opacity:.72;
+animation:cloud 16s linear infinite;
+}
 
-.panel{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:#082026b5;backdrop-filter:blur(3px)}
-.card{width:86%;max-width:360px;background:#07372ef3;border:3px solid #ffd52d;border-radius:26px;padding:26px 22px;text-align:center;color:white;box-shadow:0 15px 35px #0006}
-.logo{font-size:45px;font-weight:900;color:#ffd52d;text-shadow:0 4px 0 #8a6200}
-.card p{margin:14px 0 20px;line-height:1.45;color:#d8fff2}
-button{width:100%;border:0;border-radius:16px;padding:15px;background:#ffd52d;color:#173020;font-weight:900;font-size:20px}
-#over{display:none}
-#tip{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);z-index:16;background:#0005;color:#fff;padding:8px 14px;border-radius:18px;font-weight:700;white-space:nowrap}
+.c1{top:12%;left:110%}
+.c2{top:32%;left:150%;animation-delay:-7s}
+
+@keyframes cloud{
+to{transform:translateX(-175vw)}
+}
+
+#ground{
+position:absolute;
+bottom:0;
+width:100%;
+height:32px;
+background:repeating-linear-gradient(45deg,#7c4a20 0 16px,#b96e2c 16px 32px);
+border-top:5px solid #5dac43;
+z-index:12;
+}
+
+.panel{
+position:absolute;
+inset:0;
+z-index:30;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#082026b5;
+backdrop-filter:blur(3px);
+}
+
+.gameCard{
+width:86%;
+max-width:360px;
+background:#07372ef3;
+border:3px solid #ffd52d;
+border-radius:26px;
+padding:26px 22px;
+text-align:center;
+color:white;
+box-shadow:0 15px 35px #0006;
+}
+
+.gameLogo{
+font-size:40px;
+font-weight:900;
+color:#ffd52d;
+text-shadow:0 4px 0 #8a6200;
+}
+
+.gameCard p{
+margin:14px 0 20px;
+line-height:1.45;
+color:#d8fff2;
+}
+
+.yellowBtn{
+width:100%;
+border:0;
+border-radius:16px;
+padding:15px;
+background:#ffd52d;
+color:#173020;
+font-weight:900;
+font-size:18px;
+}
+
+#over{
+display:none;
+}
+
+#tip{
+position:absolute;
+bottom:46px;
+left:50%;
+transform:translateX(-50%);
+z-index:16;
+background:#0005;
+color:#fff;
+padding:8px 14px;
+border-radius:18px;
+font-weight:700;
+white-space:nowrap;
+}
+
+/* OTHER PAGES */
+
+.content{
+padding:16px;
+max-width:500px;
+margin:auto;
+}
+
+.stats{
+display:flex;
+gap:10px;
+margin-top:8px;
+}
+
+.box{
+flex:1;
+background:#0d291e;
+border:1px solid #315743;
+border-radius:18px;
+padding:14px 8px;
+text-align:center;
+}
+
+.label{
+font-size:11px;
+color:#9eafa6;
+}
+
+.value{
+font-size:25px;
+font-weight:900;
+color:#ffd83d;
+margin-top:7px;
+}
+
+.level{
+text-align:center;
+color:#ffd83d;
+font-weight:900;
+font-size:19px;
+margin:15px 0;
+}
+
+.card,.task,.upgrade,.leader-row,.friend-card{
+margin-top:12px;
+background:#0d291e;
+border:1px solid #315743;
+border-radius:18px;
+padding:14px;
+}
+
+.task,.upgrade,.leader-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+}
+
+.section{
+margin-top:22px;
+font-size:20px;
+font-weight:900;
+color:#ffd52d;
+}
+
+.muted,small{
+color:#afc4b8;
+line-height:1.45;
+}
+
+.actionBtn{
+border:0;
+border-radius:13px;
+padding:11px 13px;
+background:#ffd52d;
+color:#161200;
+font-weight:900;
+}
+
+.actionBtn:disabled{
+opacity:.45;
+}
+
+.energyHead{
+display:flex;
+justify-content:space-between;
+margin-top:18px;
+}
+
+.energyBar{
+height:16px;
+background:#07120d;
+border-radius:20px;
+overflow:hidden;
+margin-top:8px;
+}
+
+#energyFill{
+height:100%;
+background:linear-gradient(90deg,#74ff68,#b8ff6b);
+}
+
+.primary{
+width:100%;
+margin-top:12px;
+border:1px solid #d9b12a;
+background:#14251c;
+color:#ffd83d;
+padding:13px;
+border-radius:14px;
+font-weight:800;
+}
+
+.copybox{
+margin-top:10px;
+width:100%;
+background:#071c13;
+border:1px solid #315743;
+border-radius:12px;
+color:white;
+padding:11px;
+font-size:12px;
+word-break:break-all;
+}
+
+.tapBird{
+width:180px;
+height:180px;
+margin:18px auto;
+}
+
+.tapBird img{
+width:100%;
+height:100%;
+object-fit:contain;
+filter:drop-shadow(0 12px 14px #0006);
+}
+
+.tapBird:active{
+transform:scale(.94);
+}
+
+/* NAV */
+
+#bottomNav{
+position:absolute;
+bottom:0;
+left:0;
+right:0;
+height:68px;
+z-index:100;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+background:#05150e;
+border-top:1px solid #315743;
+}
+
+.nav{
+border:0;
+background:transparent;
+color:#80998b;
+font-size:11px;
+font-weight:700;
+}
+
+.nav span{
+display:block;
+font-size:21px;
+margin-bottom:2px;
+}
+
+.nav.active{
+color:#ffd52d;
+}
+
+#toast{
+position:fixed;
+z-index:999;
+top:74px;
+left:50%;
+transform:translateX(-50%);
+background:#14251c;
+border:1px solid #496d5a;
+padding:10px 14px;
+border-radius:12px;
+opacity:0;
+pointer-events:none;
+transition:.2s;
+white-space:nowrap;
+max-width:90%;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+#toast.show{
+opacity:1;
+}
 </style>
 </head>
+
 <body>
-<div id="game">
-  <div class="cloud c1">☁️</div>
-  <div class="cloud c2">☁️</div>
 
-  <div id="hud">
-    <div class="hudbox">SCORE <span id="score">0</span></div>
-    <div class="hudbox">BEST <span id="best">0</span></div>
-  </div>
+<div id="app">
 
-  <div id="bird"><img src="koki.png" alt="KOKI"></div>
-  <div id="tip">👆 Tap to fly</div>
-  <div id="ground"></div>
+<div id="topBar">
 
-  <div id="start" class="panel">
-    <div class="card">
-      <div class="logo">KOKI FLY</div>
-      <p>Fly through green pipes and brick walls. Tap anywhere to flap!</p>
-      <button id="startBtn">▶ START GAME</button>
-    </div>
-  </div>
-
-  <div id="over" class="panel">
-    <div class="card">
-      <div class="logo">GAME OVER</div>
-      <p>Score: <b id="finalScore">0</b><br>Best: <b id="finalBest">0</b></p>
-      <button id="restartBtn">🔄 PLAY AGAIN</button>
-    </div>
-  </div>
+<div class="brand">
+<img src="koki.png" alt="KOKI">
+KOKI
 </div>
 
+<div class="topBtns">
+<button class="smallBtn" id="walletBtn">Wallet Demo</button>
+<button class="smallBtn" id="googleLoginBtn">Google Login</button>
+</div>
+
+</div>
+
+<section class="page active" id="flyPage">
+
+<div id="game">
+
+<div class="cloud c1">☁️</div>
+<div class="cloud c2">☁️</div>
+
+<div id="hud">
+
+<div class="hudbox">
+SCORE <span id="score">0</span>
+</div>
+
+<div class="hudbox">
+PTS <span id="gamePoints">0</span>
+</div>
+
+<div class="hudbox">
+BEST <span id="best">0</span>
+</div>
+
+</div>
+
+<div id="bird">
+<img src="koki.png" alt="KOKI">
+</div>
+
+<div id="tip">👆 Tap to fly</div>
+<div id="ground"></div>
+
+<div id="start" class="panel">
+
+<div class="gameCard">
+
+<div class="gameLogo">KOKI FLY</div>
+
+<p>
+Fly through pipes and brick walls.<br>
+Each point in Fly gives you KOKI Points.
+</p>
+
+<button class="yellowBtn" id="startBtn">
+▶ START GAME
+</button>
+
+</div>
+
+</div>
+
+<div id="over" class="panel">
+
+<div class="gameCard">
+
+<div class="gameLogo">GAME OVER</div>
+
+<p>
+Score: <b id="finalScore">0</b><br>
+Best: <b id="finalBest">0</b><br>
+Reward: <b id="flyReward">0</b> Points
+</p>
+
+<button class="yellowBtn" id="restartBtn">
+🔄 PLAY AGAIN
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<section class="page" id="earnPage">
+
+<div class="content">
+
+<div class="stats">
+
+<div class="box">
+<div class="label">POINTS</div>
+<div class="value" id="points">0</div>
+</div>
+
+<div class="box">
+<div class="label">TAP POWER</div>
+<div class="value">+<span id="power">1</span></div>
+</div>
+
+</div>
+
+<div class="level" id="levelText">
+🥉 Bronze
+</div>
+
+<div class="tapBird" id="tapBird">
+<img src="koki.png" alt="KOKI">
+</div>
+
+<div style="text-align:center;font-weight:800">
+👆 Tap KOKI to earn game points
+</div>
+
+<div class="energyHead">
+<span>⚡ Energy</span>
+
+<span>
+<span id="energy">1000</span> /
+<span id="maxEnergy">1000</span>
+</span>
+</div>
+
+<div class="energyBar">
+<div id="energyFill"></div>
+</div>
+
+<button class="primary" id="dailyBtn">
+🎁 Daily Bonus
+</button>
+
+<div class="section">⚙️ Upgrades</div>
+
+<div class="upgrade">
+
+<div>
+<b>🦜 Strong Beak</b><br>
+<small>Tap power +1</small>
+</div>
+
+<button class="actionBtn" id="tapUpgrade">
+100
+</button>
+
+</div>
+
+<div class="upgrade">
+
+<div>
+<b>⚡ Energy Boost</b><br>
+<small>Maximum energy +250</small>
+</div>
+
+<button class="actionBtn" id="energyUpgrade">
+250
+</button>
+
+</div>
+
+<div class="section">🎯 Tasks</div>
+
+<div class="task">
+
+<div>
+<b>Tap 20 times</b><br>
+<small id="tapTaskText">0 / 20</small>
+</div>
+
+<button class="actionBtn" id="tapTaskBtn">
++200
+</button>
+
+</div>
+
+<div class="task">
+
+<div>
+<b>Play KOKI Fly</b><br>
+<small>Finish one flight</small>
+</div>
+
+<button class="actionBtn" id="flyTaskBtn">
++200
+</button>
+
+</div>
+
+<div class="task">
+
+<div>
+<b>Daily Bonus</b><br>
+<small>Claim today's bonus</small>
+</div>
+
+<button class="actionBtn" id="dailyTaskBtn">
++150
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="page" id="friendsPage">
+
+<div class="content">
+
+<div class="section">
+👥 Friends
+</div>
+
+<div class="friend-card">
+
+<b>Invite your friends</b>
+
+<p class="muted" style="margin-top:8px">
+Share your KOKI Fly referral link.
+</p>
+
+<div class="copybox" id="refLink">
+Loading...
+</div>
+
+<button class="primary" id="shareBtn">
+🔗 Share Invite
+</button>
+
+</div>
+
+<div class="card">
+
+<b>Your Referral Code</b>
+
+<div class="value" id="refCode">
+guest
+</div>
+
+</div>
+
+<div class="card">
+
+<b>Invites</b>
+
+<div class="value" id="inviteCount">
+0
+</div>
+
+<div class="muted">
+Saved invites / referral activity
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="page" id="leadersPage">
+
+<div class="content">
+
+<div class="section">
+🏆 Global Leaderboard
+</div>
+
+<div class="card">
+
+<div class="muted">
+Leaderboard uses KOKI Points stored in Firebase.
+</div>
+
+</div>
+
+<div id="globalLeaders">
+
+<div class="card">
+<div class="muted">Loading players...</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<nav id="bottomNav">
+
+<button class="nav active" data-page="flyPage">
+<span>🦜</span>
+Fly
+</button>
+
+<button class="nav" data-page="earnPage">
+<span>🎯</span>
+Earn
+</button>
+
+<button class="nav" data-page="friendsPage">
+<span>👥</span>
+Friends
+</button>
+
+<button class="nav" data-page="leadersPage">
+<span>🏆</span>
+Leaders
+</button>
+
+</nav>
+
+<div id="toast"></div>
+
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
 <script>
-const game=document.getElementById("game");
-const bird=document.getElementById("bird");
-const scoreEl=document.getElementById("score");
-const bestEl=document.getElementById("best");
-const start=document.getElementById("start");
-const over=document.getElementById("over");
-const finalScore=document.getElementById("finalScore");
-const finalBest=document.getElementById("finalBest");
 
-let running=false,score=0,y=0,velocity=0,last=0,lastObs=0,raf;
-let obstacles=[];
-let best=Number(localStorage.getItem("kokiFlyBest")||0);
-bestEl.textContent=best;
+const firebaseConfig = {
+apiKey:"AIzaSyDOB6XzlbbtifNjy4fgdKqCaFn1wMg1N5o",
+authDomain:"koki-game.firebaseapp.com",
+projectId:"koki-game",
+storageBucket:"koki-game.firebasestorage.app",
+messagingSenderId:"926136206820",
+appId:"1:926136206820:web:b346733b1268bed7f2b3f1"
+};
 
-function startGame(){
-  obstacles.forEach(o=>{o.a.remove();o.b.remove()});
-  obstacles=[];
-  score=0; scoreEl.textContent=0;
-  y=innerHeight*.43; velocity=0;
-  bird.style.top=y+"px";
-  start.style.display="none";
-  over.style.display="none";
-  running=true;
-  last=performance.now();
-  lastObs=last;
-  cancelAnimationFrame(raf);
-  raf=requestAnimationFrame(loop);
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+const $ = id => document.getElementById(id);
+
+const DEFAULT = {
+points:0,
+power:1,
+energy:1000,
+maxEnergy:1000,
+tapCost:100,
+energyCost:250,
+lastDaily:0,
+streak:0,
+lastStreakDay:"",
+taps:0,
+gamesPlayed:0,
+invites:0,
+tasks:{
+tap:false,
+fly:false,
+daily:false
+}
+};
+
+let state;
+
+try{
+state={
+...DEFAULT,
+...JSON.parse(localStorage.getItem("koki_fly_state")||"{}")
+};
+}catch(e){
+state={...DEFAULT};
 }
 
-function flap(){
-  if(!running)return;
-  velocity=-7.3;
+state.tasks={
+...DEFAULT.tasks,
+...(state.tasks||{})
+};
+
+function toast(text){
+
+const t=$("toast");
+
+t.textContent=text;
+
+t.classList.add("show");
+
+setTimeout(()=>{
+t.classList.remove("show");
+},1700);
+
 }
 
-function makeObstacle(){
-  const gap=Math.max(150,190-score*1.2);
-  const topH=85+Math.random()*Math.max(80,innerHeight-gap-240);
-  const bottomH=innerHeight-topH-gap;
-  const brickMode=Math.random()<0.38;
+function getLevel(){
 
-  const a=document.createElement("div");
-  const b=document.createElement("div");
-  a.className=(brickMode?"bricks":"pipe")+" top";
-  b.className=(brickMode?"bricks":"pipe")+" bottom";
-  a.style.height=topH+"px";
-  b.style.height=bottomH+"px";
-  a.style.left=(innerWidth+30)+"px";
-  b.style.left=(innerWidth+30)+"px";
-  game.append(a,b);
+if(state.points>=10000)
+return "💎 Diamond";
 
-  obstacles.push({
-    a,b,x:innerWidth+30,
-    width:brickMode?136:78,
-    scored:false
-  });
+if(state.points>=5000)
+return "🥇 Gold";
+
+if(state.points>=1500)
+return "🥈 Silver";
+
+return "🥉 Bronze";
+
 }
 
-function collision(el){
-  const A=bird.getBoundingClientRect();
-  const B=el.getBoundingClientRect();
-  const p=14;
-  return !(A.right-p<B.left || A.left+p>B.right || A.bottom-p<B.top || A.top+p>B.bottom);
+function today(){
+
+return new Date()
+.toISOString()
+.slice(0,10);
+
 }
 
-function endGame(){
-  if(!running)return;
-  running=false;
-  best=Math.max(best,score);
-  localStorage.setItem("kokiFlyBest",best);
-  bestEl.textContent=best;
-  finalScore.textContent=score;
-  finalBest.textContent=best;
-  over.style.display="flex";
+function saveLocal(){
+
+localStorage.setItem(
+"koki_fly_state",
+JSON.stringify(state)
+);
+
 }
 
-function loop(now){
-  if(!running)return;
-  const d=Math.min(2,(now-last)/16.67);
-  last=now;
+let cloudTimer=null;
 
-  velocity+=0.38*d;
-  y+=velocity*d;
-  bird.style.top=y+"px";
-  bird.style.transform=`translate(-50%,-50%) rotate(${Math.max(-18,Math.min(55,velocity*4))}deg)`;
+function saveCloud(){
 
-  if(y<0 || y>innerHeight-70){ endGame(); return; }
+saveLocal();
 
-  if(now-lastObs>1450){
-    makeObstacle();
-    lastObs=now;
-  }
+clearTimeout(cloudTimer);
 
-  const speed=3.1+Math.min(2.2,score*.08);
+cloudTimer=setTimeout(async()=>{
 
-  for(let i=obstacles.length-1;i>=0;i--){
-    const o=obstacles[i];
-    o.x-=speed*d;
-    o.a.style.left=o.x+"px";
-    o.b.style.left=o.x+"px";
+const user=auth.currentUser;
 
-    if(collision(o.a)||collision(o.b)){ endGame(); return; }
+if(!user)return;
 
-    if(!o.scored && o.x+o.width<innerWidth*.20){
-      o.scored=true;
-      score++;
-      scoreEl.textContent=score;
-    }
+try{
 
-    if(o.x<-160){
-      o.a.remove();o.b.remove();obstacles.splice(i,1);
-    }
-  }
+await db.collection("players")
+.doc(user.uid)
+.set({
 
-  raf=requestAnimationFrame(loop);
+points:Math.floor(state.points),
+
+flyBest:Number(
+localStorage.getItem("kokiFlyBest")||0
+),
+
+gamesPlayed:state.gamesPlayed||0,
+
+updatedAt:
+firebase.firestore.FieldValue.serverTimestamp()
+
+},{merge:true});
+
+}catch(error){
+
+console.error(
+"Cloud save error",
+error
+);
+
 }
 
-document.addEventListener("pointerdown",e=>{
-  if(e.target.tagName==="BUTTON")return;
-  flap();
+},500);
+
+}
+
+function referralCode(){
+
+const user=auth.currentUser;
+
+return user
+?user.uid.slice(0,8)
+:"guest";
+
+}
+
+function referralLink(){
+
+const base=
+location.href
+.split("?")[0]
+.split("#")[0];
+
+return base+
+"?ref="+
+referralCode();
+
+}
+
+function draw(){
+
+$("points").textContent=
+Math.floor(state.points);
+
+$("gamePoints").textContent=
+Math.floor(state.points);
+
+$("power").textContent=
+state.power;
+
+$("energy").textContent=
+Math.floor(state.energy);
+
+$("maxEnergy").textContent=
+state.maxEnergy;
+
+$("energyFill").style.width=
+Math.max(
+0,
+Math.min(
+100,
+state.energy/state.maxEnergy*100
+)
+)+"%";
+
+$("levelText").textContent=
+getLevel();
+
+$("tapUpgrade").textContent=
+state.tapCost;
+
+$("energyUpgrade").textContent=
+state.energyCost;
+
+$("tapUpgrade").disabled=
+state.points<state.tapCost;
+
+$("energyUpgrade").disabled=
+state.points<state.energyCost;
+
+$("tapTaskText").textContent=
+Math.min(state.taps,20)+
+" / 20";
+
+$("tapTaskBtn").disabled=
+state.tasks.tap||
+state.taps<20;
+
+$("flyTaskBtn").disabled=
+state.tasks.fly||
+state.gamesPlayed<1;
+
+$("dailyTaskBtn").disabled=
+state.tasks.daily||
+state.lastDaily===0;
+
+$("inviteCount").textContent=
+state.invites||0;
+
+$("refCode").textContent=
+referralCode();
+
+$("refLink").textContent=
+referralLink();
+
+const dailyReady=
+Date.now()-state.lastDaily>=86400000;
+
+$("dailyBtn").disabled=
+!dailyReady;
+
+$("dailyBtn").textContent=
+dailyReady
+?"🎁 Daily Bonus +500"
+:"✅ Daily Bonus claimed";
+
+}
+  function claimTask(key,reward){
+
+if(state.tasks[key])
+return;
+
+state.tasks[key]=true;
+
+state.points+=reward;
+
+saveCloud();
+draw();
+
+toast(
+"+"+reward+
+" Points ✅"
+);
+
+}
+
+
+$("tapBird").addEventListener(
+"click",
+()=>{
+
+if(state.energy<1){
+
+toast(
+"Not enough energy ⚡"
+);
+
+return;
+
+}
+
+state.points+=state.power;
+
+state.energy-=1;
+
+state.taps+=1;
+
+saveCloud();
+draw();
+
+if(navigator.vibrate){
+navigator.vibrate(15);
+}
+
+}
+);
+
+
+$("tapUpgrade").onclick=()=>{
+
+if(state.points<state.tapCost)
+return;
+
+state.points-=state.tapCost;
+
+state.power+=1;
+
+state.tapCost=
+Math.ceil(
+state.tapCost*1.8
+);
+
+saveCloud();
+draw();
+
+toast(
+"Tap Power upgraded 🦜"
+);
+
+};
+
+
+$("energyUpgrade").onclick=()=>{
+
+if(state.points<state.energyCost)
+return;
+
+state.points-=state.energyCost;
+
+state.maxEnergy+=250;
+
+state.energy=
+Math.min(
+state.maxEnergy,
+state.energy+250
+);
+
+state.energyCost=
+Math.ceil(
+state.energyCost*1.8
+);
+
+saveCloud();
+draw();
+
+toast(
+"Energy upgraded ⚡"
+);
+
+};
+
+
+$("dailyBtn").onclick=()=>{
+
+if(
+Date.now()-state.lastDaily<
+86400000
+)return;
+
+const yesterday=
+new Date(
+Date.now()-86400000
+)
+.toISOString()
+.slice(0,10);
+
+if(
+state.lastStreakDay===
+yesterday
+){
+
+state.streak+=1;
+
+}else{
+
+state.streak=1;
+
+}
+
+state.lastStreakDay=today();
+
+const reward=
+500+
+Math.min(
+state.streak*25,
+250
+);
+
+state.points+=reward;
+
+state.lastDaily=
+Date.now();
+
+saveCloud();
+draw();
+
+toast(
+"+"+reward+
+" Daily Points 🎁"
+);
+
+};
+
+
+$("tapTaskBtn").onclick=
+()=>claimTask(
+"tap",
+200
+);
+
+$("flyTaskBtn").onclick=
+()=>claimTask(
+"fly",
+200
+);
+
+$("dailyTaskBtn").onclick=
+()=>claimTask(
+"daily",
+150
+);
+
+
+setInterval(()=>{
+
+if(
+state.energy<
+state.maxEnergy
+){
+
+state.energy=
+Math.min(
+state.maxEnergy,
+state.energy+2
+);
+
+saveLocal();
+draw();
+
+}
+
+},1000);
+
+
+/* WALLET DEMO */
+
+$("walletBtn").onclick=()=>{
+
+toast(
+"Wallet button is demo only"
+);
+
+};
+
+
+/* REFERRAL */
+
+const incomingRef=
+new URLSearchParams(
+location.search
+)
+.get("ref");
+
+if(incomingRef){
+
+localStorage.setItem(
+"koki_referrer",
+incomingRef
+);
+
+}
+
+if(
+incomingRef&&
+!localStorage.getItem(
+"koki_ref_bonus"
+)
+){
+
+state.points+=250;
+
+localStorage.setItem(
+"koki_ref_bonus",
+"1"
+);
+
+saveLocal();
+
+toast(
+"Referral bonus +250 🎉"
+);
+
+}
+
+
+$("shareBtn").onclick=async()=>{
+
+const url=referralLink();
+
+try{
+
+if(navigator.share){
+
+await navigator.share({
+title:"KOKI Fly",
+text:"Play KOKI Fly with me!",
+url:url
 });
 
-document.getElementById("startBtn").onclick=startGame;
-document.getElementById("restartBtn").onclick=startGame;
+}else{
+
+await navigator.clipboard
+.writeText(url);
+
+toast(
+"Invite link copied 🔗"
+);
+
+}
+
+}catch(error){}
+
+};
+
+
+/* LEADERBOARD */
+
+function escapeHtml(text){
+
+return String(text)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+async function loadLeaderboard(){
+
+const box=$("globalLeaders");
+
+box.innerHTML=
+'<div class="card"><div class="muted">Loading players...</div></div>';
+
+try{
+
+const snapshot=
+await db.collection("players")
+.orderBy("points","desc")
+.limit(20)
+.get();
+
+if(snapshot.empty){
+
+box.innerHTML=
+'<div class="card"><div class="muted">No players yet.</div></div>';
+
+return;
+
+}
+
+let html="";
+let rank=1;
+
+snapshot.forEach(doc=>{
+
+const data=doc.data();
+
+const name=
+escapeHtml(
+data.nickname||
+"KOKI_"+doc.id.slice(0,6)
+);
+
+const points=
+Math.floor(
+data.points||0
+);
+
+const flyBest=
+Math.floor(
+data.flyBest||0
+);
+
+html+=`
+
+<div class="leader-row">
+
+<div>
+
+<div style="
+font-size:21px;
+font-weight:900;
+color:#ffd52d
+">
+#${rank} ${name}
+</div>
+
+<small>
+Fly Best: ${flyBest}
+</small>
+
+</div>
+
+<div class="value">
+${points}
+</div>
+
+</div>
+
+`;
+
+rank++;
+
+});
+
+box.innerHTML=html;
+
+}catch(error){
+
+console.error(
+"Leaderboard error",
+error
+);
+
+box.innerHTML=
+'<div class="card"><div class="muted">Leaderboard error</div></div>';
+
+}
+
+}
+
+
+/* GOOGLE LOGIN */
+
+$("googleLoginBtn")
+.addEventListener(
+"click",
+async()=>{
+
+const current=
+auth.currentUser;
+
+if(
+current&&
+!current.isAnonymous
+){
+
+toast(
+"Google account connected ✅"
+);
+
+return;
+
+}
+
+const provider=
+new firebase.auth.GoogleAuthProvider();
+
+try{
+
+const result=
+await auth.signInWithPopup(
+provider
+);
+
+const playerRef=
+db.collection("players")
+.doc(result.user.uid);
+
+const doc=
+await playerRef.get();
+
+let nickname=
+doc.exists
+?doc.data().nickname
+:null;
+
+if(!nickname){
+
+nickname=
+prompt(
+"Choose your KOKI nickname:"
+);
+
+nickname=
+(nickname||"")
+.trim()
+.slice(0,20);
+
+if(!nickname){
+
+nickname=
+"KOKI_"+
+result.user.uid
+.slice(0,6);
+
+}
+
+const savedRef=
+localStorage.getItem(
+"koki_referrer"
+);
+
+await playerRef.set({
+
+nickname:nickname,
+
+...(savedRef
+?{referredByCode:savedRef}
+:{}),
+
+createdAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp()
+
+},{merge:true});
+
+if(savedRef){
+
+localStorage.removeItem(
+"koki_referrer"
+);
+
+}
+
+}
+
+$("googleLoginBtn")
+.textContent=
+nickname;
+
+await saveCloud();
+
+loadLeaderboard();
+
+toast(
+"Google account connected ✅"
+);
+
+}catch(error){
+
+console.error(
+"Google login error",
+error
+);
+
+toast(
+"Google login error"
+);
+
+}
+
+}
+);
+  auth.onAuthStateChanged(
+async user=>{
+
+if(!user){
+
+try{
+
+await auth.signInAnonymously();
+
+}catch(error){
+
+console.error(
+"Anonymous login error",
+error
+);
+
+}
+
+return;
+
+}
+
+try{
+
+const playerRef=
+db.collection("players")
+.doc(user.uid);
+
+const doc=
+await playerRef.get();
+
+if(doc.exists){
+
+const data=doc.data();
+
+if(
+data.points!=null&&
+Number(data.points)>
+Number(state.points)
+){
+
+state.points=
+Number(data.points);
+
+}
+
+if(data.nickname){
+
+$("googleLoginBtn")
+.textContent=
+data.nickname;
+
+}
+
+}else{
+
+await playerRef.set({
+
+points:
+Math.floor(state.points),
+
+flyBest:
+Number(
+localStorage.getItem(
+"kokiFlyBest"
+)||0
+),
+
+createdAt:
+firebase.firestore
+.FieldValue
+.serverTimestamp()
+
+},{merge:true});
+
+}
+
+saveLocal();
+draw();
+loadLeaderboard();
+
+}catch(error){
+
+console.error(
+"Player load error",
+error
+);
+
+}
+
+}
+);
+
+
+/* NAVIGATION */
+
+document
+.querySelectorAll(".nav")
+.forEach(button=>{
+
+button.onclick=()=>{
+
+document
+.querySelectorAll(".nav")
+.forEach(n=>
+n.classList.remove(
+"active"
+)
+);
+
+document
+.querySelectorAll(".page")
+.forEach(p=>
+p.classList.remove(
+"active"
+)
+);
+
+button
+.classList
+.add("active");
+
+$(button.dataset.page)
+.classList
+.add("active");
+
+if(
+button.dataset.page===
+"leadersPage"
+){
+
+loadLeaderboard();
+
+}
+
+draw();
+
+};
+
+});
+
+
+/* KOKI FLY GAME */
+
+const game=$("game");
+const bird=$("bird");
+const scoreEl=$("score");
+const bestEl=$("best");
+const start=$("start");
+const over=$("over");
+const finalScore=$("finalScore");
+const finalBest=$("finalBest");
+const flyReward=$("flyReward");
+
+let running=false;
+
+let score=0;
+
+let y=0;
+
+let velocity=0;
+
+let last=0;
+
+let lastObs=0;
+
+let raf;
+
+let obstacles=[];
+
+let best=
+Number(
+localStorage.getItem(
+"kokiFlyBest"
+)||0
+);
+
+bestEl.textContent=best;
+
+
+function startGame(){
+
+obstacles.forEach(o=>{
+
+o.a.remove();
+o.b.remove();
+
+});
+
+obstacles=[];
+
+score=0;
+
+scoreEl.textContent=0;
+
+y=
+game.clientHeight*.43;
+
+velocity=0;
+
+bird.style.top=
+y+"px";
+
+start.style.display=
+"none";
+
+over.style.display=
+"none";
+
+$("tip").style.display=
+"block";
+
+running=true;
+
+last=
+performance.now();
+
+lastObs=last;
+
+cancelAnimationFrame(
+raf
+);
+
+raf=
+requestAnimationFrame(
+loop
+);
+
+}
+
+
+function flap(){
+
+if(!running)
+return;
+
+velocity=-7.3;
+
+$("tip").style.display=
+"none";
+
+}
+
+
+function makeObstacle(){
+
+const h=
+game.clientHeight;
+
+const gap=
+Math.max(
+150,
+190-score*1.2
+);
+
+const free=
+Math.max(
+80,
+h-gap-240
+);
+
+const topH=
+85+
+Math.random()*free;
+
+const bottomH=
+h-topH-gap;
+
+const brickMode=
+Math.random()<0.38;
+
+const a=
+document.createElement(
+"div"
+);
+
+const b=
+document.createElement(
+"div"
+);
+
+a.className=
+(brickMode
+?"bricks"
+:"pipe")
++" top";
+
+b.className=
+(brickMode
+?"bricks"
+:"pipe")
++" bottom";
+
+a.style.height=
+topH+"px";
+
+b.style.height=
+bottomH+"px";
+
+a.style.left=
+(game.clientWidth+30)
++"px";
+
+b.style.left=
+(game.clientWidth+30)
++"px";
+
+game.append(a,b);
+
+obstacles.push({
+
+a:a,
+b:b,
+
+x:
+game.clientWidth+30,
+
+width:
+brickMode
+?136
+:78,
+
+scored:false
+
+});
+
+}
+
+
+function collision(el){
+
+const A=
+bird.getBoundingClientRect();
+
+const B=
+el.getBoundingClientRect();
+
+const p=12;
+
+return !(
+A.right-p<B.left||
+A.left+p>B.right||
+A.bottom-p<B.top||
+A.top+p>B.bottom
+);
+
+}
+
+
+function endGame(){
+
+if(!running)
+return;
+
+running=false;
+
+best=
+Math.max(
+best,
+score
+);
+
+localStorage.setItem(
+"kokiFlyBest",
+best
+);
+
+bestEl.textContent=
+best;
+
+finalScore.textContent=
+score;
+
+finalBest.textContent=
+best;
+
+const reward=
+score*10;
+
+flyReward.textContent=
+reward;
+
+if(reward>0){
+
+state.points+=reward;
+
+}
+
+state.gamesPlayed=
+(state.gamesPlayed||0)+1;
+
+saveCloud();
+
+draw();
+
+over.style.display=
+"flex";
+
+loadLeaderboard();
+
+}
+
+
+function loop(now){
+
+if(!running)
+return;
+
+const d=
+Math.min(
+2,
+(now-last)/16.67
+);
+
+last=now;
+
+velocity+=
+0.38*d;
+
+y+=
+velocity*d;
+
+bird.style.top=
+y+"px";
+
+bird.style.transform=
+`translate(-50%,-50%) rotate(${
+Math.max(
+-18,
+Math.min(
+55,
+velocity*4
+)
+)
+}deg)`;
+
+if(
+y<0||
+y>game.clientHeight-65
+){
+
+endGame();
+
+return;
+
+}
+
+if(
+now-lastObs>
+1450
+){
+
+makeObstacle();
+
+lastObs=now;
+
+}
+
+const speed=
+3.1+
+Math.min(
+2.2,
+score*.08
+);
+
+for(
+let i=
+obstacles.length-1;
+i>=0;
+i--
+){
+
+const o=
+obstacles[i];
+
+o.x-=
+speed*d;
+
+o.a.style.left=
+o.x+"px";
+
+o.b.style.left=
+o.x+"px";
+
+if(
+collision(o.a)||
+collision(o.b)
+){
+
+endGame();
+
+return;
+
+}
+
+if(
+!o.scored&&
+o.x+o.width<
+game.clientWidth*.20
+){
+
+o.scored=true;
+
+score++;
+
+scoreEl.textContent=
+score;
+
+}
+
+if(o.x<-160){
+
+o.a.remove();
+
+o.b.remove();
+
+obstacles.splice(
+i,
+1
+);
+
+}
+
+}
+
+raf=
+requestAnimationFrame(
+loop
+);
+
+}
+
+
+game.addEventListener(
+"pointerdown",
+e=>{
+
+if(
+e.target.tagName===
+"BUTTON"
+)return;
+
+flap();
+
+}
+);
+
+
+$("startBtn").onclick=
+startGame;
+
+$("restartBtn").onclick=
+startGame;
+
+
+window.addEventListener(
+"resize",
+()=>{
+
+if(!running)
+return;
+
+y=Math.min(
+y,
+game.clientHeight-70
+);
+
+}
+);
+
+
+draw();
+
 </script>
+
 </body>
 </html>
