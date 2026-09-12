@@ -197,23 +197,27 @@ background:linear-gradient(90deg,#0c7131,#58df64,#1a8a3b);
 border:4px solid #124c26;
 border-radius:6px;
 }
-
 .bricks{
 position:absolute;
 width:130px;
-background-color:#b64f2d;
-background-image:
-linear-gradient(#e08a5b 2px,transparent 2px),
-linear-gradient(90deg,#6b2d1d 3px,transparent 3px);
-background-size:100% 28px,65px 28px;
+background:
+linear-gradient(rgba(255,255,255,.06),rgba(0,0,0,.08)),
+repeating-linear-gradient(
+0deg,
+#c86442 0px,
+#c86442 24px,
+#7a3527 25px,
+#7a3527 28px
+);
 border:4px solid #6f2b18;
-box-shadow:inset 0 0 10px #7a301f;
+box-shadow:
+inset 0 0 12px rgba(80,25,10,.55),
+0 3px 8px rgba(0,0,0,.25);
 z-index:7;
 }
 
 .bricks.top{top:0}
 .bricks.bottom{bottom:0}
-
 .cloud{
 position:absolute;
 font-size:50px;
