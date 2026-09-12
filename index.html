@@ -2110,23 +2110,17 @@ o.x+"px";
 
 o.b.style.left=
 o.x+"px";
-if(o.coin && !o.collected){
-
+  if(o.coin && !o.collected){
     o.coin.style.left = (o.x + 18) + "px";
 
     if(collision(o.coin)){
         o.collected = true;
-
-        // ჯერ ეკრანიდან მაშინვე გაქრეს
-        o.coin.style.display = "none";
         o.coin.remove();
         o.coin = null;
 
-        // +10 Points
         state.points += 10;
         saveLocal();
         draw();
-
         // coin sound
         try{
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
